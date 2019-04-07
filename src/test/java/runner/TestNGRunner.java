@@ -8,7 +8,7 @@ import cucumber.api.testng.AbstractTestNGCucumberTests;
 		glue={"stepDefinition"},
 		tags= {"@tag"},
 		monochrome=true,
-		plugin= {"com.report.CucumberExtent:target/cucumber-extent-reports/report.html"}
+		plugin= {"com.report.CucumberExtent:target/cucumber-extent-reports/report.html;DocTitle;RepName"}
 		)
 
 public class TestNGRunner extends AbstractTestNGCucumberTests{}

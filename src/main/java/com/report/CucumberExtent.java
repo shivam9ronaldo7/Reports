@@ -35,13 +35,15 @@ public class CucumberExtent implements EventListener{
 
 	private final TestSourcesModel testSources = new TestSourcesModel();
 	private String currentFeatureFile;
-	private String htmlReportDir;
+	private final String htmlReportDir;
 
 	//Builds a new report using the html template
 	private ExtentHtmlReporter htmlReporter = null;
 	private ExtentReports extent = null;
 	private ExtentTest feature = null;
 	private ExtentTest scenario = null;
+	private String documentTitle = null;
+	private String reportName = null;
 
 	public void setEventPublisher(EventPublisher publisher) {
 		publisher.registerHandlerFor(TestSourceRead.class, testSourceReadHandler);
@@ -126,7 +128,12 @@ public class CucumberExtent implements EventListener{
 	};
 	
 	public CucumberExtent(String htmlReportDir) {
-		this.htmlReportDir = htmlReportDir;
+		String[] arr = htmlReportDir.split(";");
+		this.htmlReportDir = arr[0];
+		if(arr.length>1) {
+			this.documentTitle = arr[1];
+			this.reportName = arr[2];
+		}		
 	}
 
 	//Called at the beginning of the test run
@@ -185,14 +192,16 @@ public class CucumberExtent implements EventListener{
 	//Method to configure ExtentHtmlReporter
 	private void configureExtentHtmlReporter() {
 		//Configuration items to change the look and feel
-		htmlReporter.config().setDocumentTitle("SHIVAM EXECUTION REPORT");
+		if(documentTitle!=null)
+			htmlReporter.config().setDocumentTitle(documentTitle);
+		if(reportName!=null)
+			htmlReporter.config().setReportName(reportName);
 		htmlReporter.config().setTheme(Theme.DARK);
 		htmlReporter.config().setProtocol(Protocol.HTTPS);
 		htmlReporter.config().setAutoCreateRelativePathMedia(true);
 		htmlReporter.config().setCSS("css-string");
 		htmlReporter.config().setEncoding("utf-8");
-		htmlReporter.config().setJS("js-string");
-		htmlReporter.config().setReportName("Shivam Report");
+		htmlReporter.config().setJS("js-string");		
 		htmlReporter.config().setTimeStampFormat("MMM dd, yyyy HH:mm:ss");
 	}
 
