@@ -38,12 +38,12 @@ public class CucumberExtent implements EventListener{
 	private final String htmlReportDir;
 
 	//Builds a new report using the html template
-	private ExtentHtmlReporter htmlReporter = null;
+	private ExtentHtmlReporter extentHtmlReporter = null;
 	private ExtentReports extent = null;
-	private ExtentTest feature = null;
-	private ExtentTest scenario = null;
-	private String documentTitle = null;
-	private String reportName = null;
+	private ExtentTest extentFeature = null;
+	private ExtentTest extentScenario = null;
+	private String extentDocumentTitle = null;
+	private String extentReportName = null;
 
 	public void setEventPublisher(EventPublisher publisher) {
 		publisher.registerHandlerFor(TestSourceRead.class, testSourceReadHandler);
@@ -64,7 +64,7 @@ public class CucumberExtent implements EventListener{
 			handleTestRunStarted(event);
 		}
 	};
-	
+
 	private EventHandler<TestSourceRead> testSourceReadHandler = new EventHandler<TestSourceRead>() {
 		@Override
 		public void receive(TestSourceRead event) {
@@ -72,7 +72,7 @@ public class CucumberExtent implements EventListener{
 			handleTestSourceRead(event);
 		}
 	};
-	
+
 	private EventHandler<TestCaseStarted> caseStartedHandler = new EventHandler<TestCaseStarted>() {
 		@Override
 		public void receive(TestCaseStarted event) {
@@ -80,7 +80,7 @@ public class CucumberExtent implements EventListener{
 			handleTestCaseStarted(event);
 		}
 	};
-	
+
 	private EventHandler<TestStepStarted> stepStartedHandler = new EventHandler<TestStepStarted>() {
 		@Override
 		public void receive(TestStepStarted event) {
@@ -119,20 +119,20 @@ public class CucumberExtent implements EventListener{
 			handleEmbed(event);
 		}
 	};
-	
+
 	private EventHandler<WriteEvent> writeEventhandler = new EventHandler<WriteEvent>() {
 		@Override
 		public void receive(WriteEvent event) {
 			handleWrite(event);
 		}
 	};
-	
+
 	public CucumberExtent(String htmlReportDir) {
 		String[] arr = htmlReportDir.split(";");
 		this.htmlReportDir = arr[0];
 		if(arr.length>1) {
-			this.documentTitle = arr[1];
-			this.reportName = arr[2];
+			this.extentDocumentTitle = arr[1];
+			this.extentReportName = arr[2];
 		}		
 	}
 
@@ -182,27 +182,27 @@ public class CucumberExtent implements EventListener{
 	//Method to attach ExtentHtmlReporter
 	private void attachExtentHtmlReporter() {
 		//Initialize the HtmlReporter
-		htmlReporter = new ExtentHtmlReporter(htmlReportDir);
+		extentHtmlReporter = new ExtentHtmlReporter(htmlReportDir);
 		//Initialize ExtentReports and attach the HtmlReporter
 		extent = new ExtentReports();
 		extent.setSystemInfo("OS", System.getProperty("os.name"));
-		extent.attachReporter(htmlReporter);
+		extent.attachReporter(extentHtmlReporter);
 	}
 
 	//Method to configure ExtentHtmlReporter
 	private void configureExtentHtmlReporter() {
 		//Configuration items to change the look and feel
-		if(documentTitle!=null)
-			htmlReporter.config().setDocumentTitle(documentTitle);
-		if(reportName!=null)
-			htmlReporter.config().setReportName(reportName);
-		htmlReporter.config().setTheme(Theme.DARK);
-		htmlReporter.config().setProtocol(Protocol.HTTPS);
-		htmlReporter.config().setAutoCreateRelativePathMedia(true);
-		htmlReporter.config().setCSS("css-string");
-		htmlReporter.config().setEncoding("utf-8");
-		htmlReporter.config().setJS("js-string");		
-		htmlReporter.config().setTimeStampFormat("MMM dd, yyyy HH:mm:ss");
+		if(extentDocumentTitle!=null)
+			extentHtmlReporter.config().setDocumentTitle(extentDocumentTitle);
+		if(extentReportName!=null)
+			extentHtmlReporter.config().setReportName(extentReportName);
+		extentHtmlReporter.config().setTheme(Theme.DARK);
+		extentHtmlReporter.config().setProtocol(Protocol.HTTPS);
+		extentHtmlReporter.config().setAutoCreateRelativePathMedia(true);
+		extentHtmlReporter.config().setCSS("css-string");
+		extentHtmlReporter.config().setEncoding("utf-8");
+		extentHtmlReporter.config().setJS("js-string");		
+		extentHtmlReporter.config().setTimeStampFormat("MMM dd, yyyy HH:mm:ss");
 	}
 
 	//Method to generate ExtentHtmlReporter
@@ -214,45 +214,46 @@ public class CucumberExtent implements EventListener{
 	//Method to create Scenario or Scenario Outline
 	private void createScenario(ScenarioDefinition scenarioDefinition, TestCase testCase) {		
 		switch(scenarioDefinition.getKeyword()) {
-		case "Scenario": scenario = feature.createNode(Scenario.class, (testCase.getName()+"\n"+
-					((scenarioDefinition.getDescription() != null) ? ("\n"+scenarioDefinition.getDescription()) : "")));
-			break;
-		case "Scenario Outline": scenario = feature.createNode(Scenario.class, (testCase.getName()+"\n"+
+		case "Scenario": extentScenario = extentFeature.createNode(Scenario.class, (testCase.getName()+"\n"+
 				((scenarioDefinition.getDescription() != null) ? ("\n"+scenarioDefinition.getDescription()) : "")));
-			break;
+		break;
+		case "Scenario Outline": extentScenario = extentFeature.createNode(Scenario.class, (testCase.getName()+"\n"+
+				((scenarioDefinition.getDescription() != null) ? ("\n"+scenarioDefinition.getDescription()) : "")));
+		break;
 		default: throw new CucumberException("Wrong scenario keyword "+scenarioDefinition.getKeyword());
 		}
-		
+
 	}
-	
+
 	//Method to create Steps
 	private void createSteps(Step step, PickleStepTestStep testStep, Result result) {
 		switch(step.getKeyword()) {
-		case "Given ": stepStatus(scenario.createNode(Given.class, testStep.getStepText()),result);
-			break;
-		case "When ": stepStatus(scenario.createNode(When.class, testStep.getStepText()),result);
-			break;
-		case "Then ": stepStatus(scenario.createNode(Then.class, testStep.getStepText()),result);
-			break;
-		case "And ": stepStatus(scenario.createNode(And.class, testStep.getStepText()),result);
-			break;
+		case "Given ": stepStatus(extentScenario.createNode(Given.class, testStep.getStepText()),result);
+		break;
+		case "When ": stepStatus(extentScenario.createNode(When.class, testStep.getStepText()),result);
+		break;
+		case "Then ": stepStatus(extentScenario.createNode(Then.class, testStep.getStepText()),result);
+		break;
+		case "And ": stepStatus(extentScenario.createNode(And.class, testStep.getStepText()),result);
+		break;
 		default: throw new CucumberException("Wrong step keyword "+step.getKeyword());
 		}
 	}
-	
+
 	//Method to select type of Steps
 	private void stepStatus(ExtentTest test, Result result) {
 		switch(result.getStatus().toString()) {
 		case "PASSED": test.pass("Pass");
-			break;
+		break;
 		case "FAILED": test.fail("Fail");
-			break;
+		test.fail(result.getErrorMessage());
+		break;
 		case "SKIPPED": test.skip("Skip");
-			break;
+		break;
 		case "UNDEFINED": test.fatal("Undefined");
-			break;
+		break;
 		case "PENDING": test.warning("Pending");
-			break;
+		break;
 		default: throw new CucumberException("Wrong step status "+result.getStatus());
 		}
 	}
@@ -262,14 +263,17 @@ public class CucumberExtent implements EventListener{
 		if (currentFeatureFile == null || !currentFeatureFile.equals(testCase.getUri())) {
 			currentFeatureFile = null;
 			currentFeatureFile = testCase.getUri();
-			createFeatureName(testCase.getName());
-			//System.out.println("currentFeatureFile: "+currentFeatureFile);
+			createFeatureName(testCase);
 		}
 	}
-	
+
 	//Method to create Feature name
-	private void createFeatureName(String currentFeatureFile) {
-		feature = extent.createTest(Feature.class, currentFeatureFile);
+	private void createFeatureName(TestCase testCase) {
+		gherkin.ast.Feature feature = testSources.getFeature(testCase.getUri());
+		if (feature != null) {
+			extentFeature = extent.createTest(Feature.class, (feature.getName()+"\n"+
+					((feature.getDescription() != null) ? ("\n"+feature.getDescription()) : "")));
+		}
 	}
 
 	//Method to create Scenario name
@@ -278,8 +282,6 @@ public class CucumberExtent implements EventListener{
 		if (astNode != null) {
 			ScenarioDefinition scenarioDefinition = TestSourcesModel.getScenarioDefinition(astNode);
 			createScenario(scenarioDefinition, testCase);
-			//System.out.println(scenarioDefinition.getKeyword()+(testCase.getName()+"\n"+
-			//((scenarioDefinition.getDescription() != null) ? ("\n"+scenarioDefinition.getDescription()) : "")));
 		}
 	}
 
@@ -289,14 +291,11 @@ public class CucumberExtent implements EventListener{
 		if (astNode != null) {
 			Step step = (Step) astNode.node;
 			createSteps(step, testStep, result);
-			//System.out.print(step.getKeyword()+testStep.getStepText());
-			//System.out.println("-->"+result.getStatus());
-			//System.out.println(result.getDuration()+" "+((result.getError()!=null)?result.getError():""));
 		}
 	}
-	
+
 	//Method to end Scenario
 	private void endTestCase() {
-		scenario = null;
+		extentScenario = null;
 	}
 }

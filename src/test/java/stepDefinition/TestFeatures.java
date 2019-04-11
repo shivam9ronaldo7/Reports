@@ -18,7 +18,9 @@ public class TestFeatures implements En{
 
 		Then("check more outcomes", () -> {});
 
-		Given("I want to write a step with name{int}", (Integer int1) -> {});
+		Given("I want to write a step with name{int}", (Integer int1) -> {
+			//throw new ArithmeticException();
+		});
 
 		When("I check for the {int} in step", (Integer int1) -> {});
 
