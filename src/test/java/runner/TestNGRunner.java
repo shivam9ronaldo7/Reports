@@ -9,11 +9,9 @@ import cucumber.api.testng.AbstractTestNGCucumberTests;
 @CucumberOptions(
 		features = "src/test/resources",
 		glue={"stepDefinition"},
-		tags= {/*"@tag",*/"@ftag1"},
+		tags= {"@ftag1"},
 		monochrome=true,
-		plugin= {/*"html:target/cucumber-report"*/
-				"com.report.CucumberExtent:target/cucumber-extent-reports/report.html"
-				}
+		plugin= {"com.report.CucumberExtent:target/cucumber-extent-reports/report.html"}
 		)
 
 public class TestNGRunner extends AbstractTestNGCucumberTests{
