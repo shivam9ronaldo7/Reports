@@ -80,7 +80,6 @@ public class CucumberExtent implements EventListener{
 	private EventHandler<TestRunStarted> runStartedHandler = new EventHandler<TestRunStarted>() {
 		@Override
 		public void receive(TestRunStarted event) {
-			//Calling method that will be called when TestRunStarted
 			handleTestRunStarted(event);
 		}
 	};
@@ -88,7 +87,6 @@ public class CucumberExtent implements EventListener{
 	private EventHandler<TestSourceRead> testSourceReadHandler = new EventHandler<TestSourceRead>() {
 		@Override
 		public void receive(TestSourceRead event) {
-			//Calling method to read feature file
 			handleTestSourceRead(event);
 		}
 	};
@@ -96,7 +94,6 @@ public class CucumberExtent implements EventListener{
 	private EventHandler<TestCaseStarted> caseStartedHandler = new EventHandler<TestCaseStarted>() {
 		@Override
 		public void receive(TestCaseStarted event) {
-			//Calling method that will be called when TestCaseStarted
 			handleTestCaseStarted(event);
 		}
 	};
@@ -104,7 +101,6 @@ public class CucumberExtent implements EventListener{
 	private EventHandler<TestStepStarted> stepStartedHandler = new EventHandler<TestStepStarted>() {
 		@Override
 		public void receive(TestStepStarted event) {
-			//Calling method that will be called when TestStepStarted
 			handleTestStepStarted(event);
 		}
 	};
@@ -124,7 +120,6 @@ public class CucumberExtent implements EventListener{
 	private EventHandler<TestCaseFinished> caseFinishedHandler = new EventHandler<TestCaseFinished>() {
 		@Override
 		public void receive(TestCaseFinished event) {
-			//Calling method that will be called when TestCaseFinished
 			handleTestCaseFinished(event);
 		}
 	};
@@ -132,7 +127,6 @@ public class CucumberExtent implements EventListener{
 	private EventHandler<TestRunFinished> runFinishedHandler = new EventHandler<TestRunFinished>() {
 		@Override
 		public void receive(TestRunFinished event) {
-			//Calling method that will be called when TestRunFinished
 			handleTestRunFinished(event);
 		}
 	};
@@ -160,18 +154,15 @@ public class CucumberExtent implements EventListener{
 		this.directory = getLocation(htmlReportDir);
 	}
 
-	//Called at the beginning of the test run
 	private void handleTestRunStarted(TestRunStarted event) {
 		attachExtentHtmlReporter();
 		configureExtentHtmlReporter();
 	}
 
-	//Called when the contents of a new feature file have been read
 	private void handleTestSourceRead(TestSourceRead event) {
 		testSources.addTestSourceReadEvent(event.uri, event);
 	}
 
-	//Called at the beginning of the test case
 	private void handleTestCaseStarted(TestCaseStarted event) {
 		startOfFeature(event.testCase);
 		if((CucumberExtentOptions.getInstance().getReportLevel()!=null)&&(CucumberExtentOptions.getInstance().getReportLevel().equals("Feature")))
@@ -182,7 +173,6 @@ public class CucumberExtent implements EventListener{
 		//check if currentFeatureFile variable is null or not
 	}
 
-	//Called at the beginning of the test step
 	private void handleTestStepStarted(TestStepStarted event) {		
 	}
 
@@ -197,7 +187,6 @@ public class CucumberExtent implements EventListener{
 		}
 	}
 
-	//Called at the end of the test case
 	private void handleTestCaseFinished(TestCaseFinished event) {
 		if((CucumberExtentOptions.getInstance().getReportLevel()!=null)&&(CucumberExtentOptions.getInstance().getReportLevel().equals("Feature")))
 			endExtentBDDTestCase();
@@ -205,7 +194,6 @@ public class CucumberExtent implements EventListener{
 			endExtentTestCase();
 	}
 
-	//Called at the end of the test run
 	private void handleTestRunFinished(TestRunFinished event) {
 		generateExtentHtmlReporter();
 	}
@@ -250,7 +238,6 @@ public class CucumberExtent implements EventListener{
 		extent.attachReporter(extentHtmlReporter);
 	}
 
-	//Method to configure ExtentHtmlReporter
 	private void configureExtentHtmlReporter() {
 		//Configuration items to change the look and feel
 		if(CucumberExtentOptions.getInstance().getDocumentTitle()!=null)
@@ -266,14 +253,12 @@ public class CucumberExtent implements EventListener{
 		extentHtmlReporter.config().setTimeStampFormat("MMM dd, yyyy HH:mm:ss");
 	}
 
-	//Method to generate ExtentHtmlReporter
 	private void generateExtentHtmlReporter() {
-		//To write or update test information to reporter
 		extent.flush();
 	}
 
 	//Method to create extent bdd scenario or scenario outline
-	private void createExtentBDDScenario(ScenarioDefinition scenarioDefinition, TestCase testCase) {		
+	private void createExtentBDDScenario(ScenarioDefinition scenarioDefinition, TestCase testCase) {
 		switch(scenarioDefinition.getKeyword()) {
 		case "Scenario": extentBDDScenario = extentBDDFeature.createNode(Scenario.class, (testCase.getName()+"\n"+
 				((scenarioDefinition.getDescription() != null) ? ("\n"+scenarioDefinition.getDescription()) : "")));
@@ -287,7 +272,7 @@ public class CucumberExtent implements EventListener{
 		}
 
 	}
-
+	
 	//Method to create extent scenario or scenario outline
 	private void createExtentScenario(ScenarioDefinition scenarioDefinition, TestCase testCase) {
 		switch(scenarioDefinition.getKeyword()) {

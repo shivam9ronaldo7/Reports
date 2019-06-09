@@ -24,8 +24,8 @@ public class TestNGRunner extends AbstractTestNGCucumberTests{
     }*/
 	@BeforeClass
 	public void beforeMethod() {
-		CucumberExtentOptions.getInstance().setDocumentTitle("My document title");
+		CucumberExtentOptions.getInstance().setDocumentTitle("Shivam document title");
 		//CucumberExtentOptions.getInstance().setReportLevel("Feature");
-		CucumberExtentOptions.getInstance().setReportName("My report name");		
+		CucumberExtentOptions.getInstance().setReportName("Shivam report name");		
 	}
 }
