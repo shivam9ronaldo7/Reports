@@ -169,14 +169,11 @@ public class CucumberExtent implements EventListener{
 			createExtentBDDTestCase(event.testCase);
 		else
 			createExtentTest(event.testCase);
-		//Method to check the file in the given uri for any external location test data
-		//check if currentFeatureFile variable is null or not
 	}
 
 	private void handleTestStepStarted(TestStepStarted event) {		
 	}
 
-	//Called at the end of the test step
 	private void handleTestStepFinished(TestStepFinished event) throws IOException {
 		if (event.testStep instanceof PickleStepTestStep) {
 			PickleStepTestStep testStep = (PickleStepTestStep) event.testStep;			
@@ -212,13 +209,11 @@ public class CucumberExtent implements EventListener{
 		}
 	}
 
-	//Method to convert byte[] to image
 	private void convertByteArrayToImage(byte[] byteImage, String fileName, String extension) throws IOException {
 		this.screenPath = this.directory+fileName;
 		ImageIO.write(ImageIO.read(new ByteArrayInputStream(byteImage)), extension, new File(this.screenPath));		
 	}
 
-	//Method to get location of report
 	private String getLocation(String htmlReportDir) {
 		String[] htmlReportDirArray = htmlReportDir.split("/");
 		String dir = "";
@@ -228,18 +223,14 @@ public class CucumberExtent implements EventListener{
 		return dir;
 	}
 
-	//Method to attach ExtentHtmlReporter
 	private void attachExtentHtmlReporter() {
-		//Initialize the HtmlReporter
 		extentHtmlReporter = new ExtentHtmlReporter(htmlReportDir);
-		//Initialize ExtentReports and attach the HtmlReporter
 		extent = new ExtentReports();
 		extent.setSystemInfo("OS", System.getProperty("os.name"));
 		extent.attachReporter(extentHtmlReporter);
 	}
 
 	private void configureExtentHtmlReporter() {
-		//Configuration items to change the look and feel
 		if(CucumberExtentOptions.getInstance().getDocumentTitle()!=null)
 			extentHtmlReporter.config().setDocumentTitle(CucumberExtentOptions.getInstance().getDocumentTitle());
 		if(CucumberExtentOptions.getInstance().getReportName()!=null)
@@ -257,7 +248,6 @@ public class CucumberExtent implements EventListener{
 		extent.flush();
 	}
 
-	//Method to create extent bdd scenario or scenario outline
 	private void createExtentBDDScenario(ScenarioDefinition scenarioDefinition, TestCase testCase) {
 		switch(scenarioDefinition.getKeyword()) {
 		case "Scenario": extentBDDScenario = extentBDDFeature.createNode(Scenario.class, (testCase.getName()+"\n"+
@@ -273,7 +263,6 @@ public class CucumberExtent implements EventListener{
 
 	}
 	
-	//Method to create extent scenario or scenario outline
 	private void createExtentScenario(ScenarioDefinition scenarioDefinition, TestCase testCase) {
 		switch(scenarioDefinition.getKeyword()) {
 		case "Scenario": extentTest = extent.createTest(testCase.getName()+"\n"+
@@ -288,7 +277,6 @@ public class CucumberExtent implements EventListener{
 		}
 	}
 
-	//Method to create extent bdd steps
 	private void createExtentBDDSteps(Step step, PickleStepTestStep testStep, Result result) throws IOException {
 		switch(step.getKeyword()) {
 		case "Given ": stepStatus(extentBDDScenario.createNode(Given.class, testStep.getStepText()),result);
@@ -303,7 +291,6 @@ public class CucumberExtent implements EventListener{
 		}
 	}
 
-	//Method to create extent steps
 	private void createExtentSteps(Step step, PickleStepTestStep testStep, Result result) throws IOException {
 		switch(step.getKeyword()) {
 		case "Given ": stepStatus(extentTest.createNode("Given "+testStep.getStepText()),result);
@@ -318,7 +305,6 @@ public class CucumberExtent implements EventListener{
 		}
 	}
 
-	//Method to select type of extent step status
 	private void stepStatus(ExtentTest test, Result result) throws IOException {
 		this.extentBDDStep = test;
 		switch(result.getStatus().toString()) {
@@ -338,7 +324,6 @@ public class CucumberExtent implements EventListener{
 		}
 	}
 
-	//Method to store address of feature file
 	private void startOfFeature(TestCase testCase) {
 		if (currentFeatureFile == null || !currentFeatureFile.equals(testCase.getUri())) {
 			currentFeatureFile = null;
@@ -348,7 +333,6 @@ public class CucumberExtent implements EventListener{
 		}
 	}
 
-	//Method to create extent test
 	private void createExtentTest(TestCase testCase) {
 		TestSourcesModel.AstNode astNode = testSources.getAstNode(currentFeatureFile, testCase.getLine());
 		if (astNode != null) {
@@ -357,7 +341,6 @@ public class CucumberExtent implements EventListener{
 		}
 	}
 
-	//Method to create extent bdd feature
 	private void createExtentBDDFeatureName(TestCase testCase) {
 		gherkin.ast.Feature feature = testSources.getFeature(testCase.getUri());
 		if (feature != null) {
@@ -366,7 +349,6 @@ public class CucumberExtent implements EventListener{
 		}
 	}
 
-	//Method to create extent bdd scenario
 	private void createExtentBDDTestCase(TestCase testCase) {
 		TestSourcesModel.AstNode astNode = testSources.getAstNode(currentFeatureFile, testCase.getLine());
 		if (astNode != null) {
@@ -375,7 +357,6 @@ public class CucumberExtent implements EventListener{
 		}
 	}
 
-	//Method to create extent bdd test step
 	private void createExtentBDDTestStep(PickleStepTestStep testStep, Result result) throws IOException {
 		TestSourcesModel.AstNode astNode = testSources.getAstNode(currentFeatureFile, testStep.getStepLine());
 		if (astNode != null) {
@@ -384,7 +365,6 @@ public class CucumberExtent implements EventListener{
 		}
 	}
 
-	//Method to create extent test step
 	private void createExtentTestStep(PickleStepTestStep testStep, Result result) throws IOException {
 		TestSourcesModel.AstNode astNode = testSources.getAstNode(currentFeatureFile, testStep.getStepLine());
 		if (astNode != null) {
@@ -393,17 +373,14 @@ public class CucumberExtent implements EventListener{
 		}
 	}
 
-	//Method to end extent bdd scenario
 	private void endExtentBDDTestCase() {
 		extentBDDScenario = null;
 	}
 
-	//Method to end extent test scenario
 	private void endExtentTestCase() {
 		extentTest = null;
 	}
 
-	//Method to create tag list
 	private void createTagList(TestCase testCase) {
 		if (!testCase.getTags().isEmpty()) {
 			for (PickleTag tag : testCase.getTags()) {
