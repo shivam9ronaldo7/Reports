@@ -1,5 +1,5 @@
 #Author: shivam9ronaldo7@gmail.com
-@tag
+@ftag1
 Feature: Title of your feature1
   I want to use this template for my feature file
 
@@ -21,5 +21,5 @@ Feature: Title of your feature1
 
     Examples: 
       | name  | value | status  |
-      | name1 |     5 | success |
-      | name2 |     7 | Fail    |
+      | name1 |     3 | success |
+      | name2 |     1 | Fail    |
