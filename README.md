@@ -75,3 +75,4 @@ public void afterStepHook(Scenario scenario) throws IOException {
 
 ## This report will work with Cucumbers parallel execution.
 To know about cucumber parallel execution click [here](https://github.com/cucumber/cucumber-jvm/tree/master/testng).
+Feel free to report any issue if faced.
